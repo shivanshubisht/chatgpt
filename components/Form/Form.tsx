@@ -6,6 +6,17 @@ const Form = () => {
   const [response, setResponse] = useState<String[]>([]);
   const [isLoading, setIsLoading] = useState<Boolean>(false);
 
+  const handleEnter = (
+    e:
+      | React.KeyboardEvent<HTMLTextAreaElement> &
+          React.FormEvent<HTMLFormElement>
+  ) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const message = messageInput.current?.value;
@@ -13,6 +24,7 @@ const Form = () => {
       const initialResponse: String[] = [...response, message];
       setResponse(initialResponse);
       setIsLoading(true);
+      messageInput.current!.value = '';
     }
 
     if (!message) {
@@ -23,6 +35,7 @@ const Form = () => {
     const totalResponse: String[] = [...response, message, data.bot];
     setResponse(totalResponse);
     setIsLoading(false);
+    messageInput.current!.value = '';
   };
 
   return (
@@ -55,6 +68,7 @@ const Form = () => {
             name='Message'
             placeholder='Type your query'
             ref={messageInput}
+            onKeyDown={handleEnter}
             className=' m-0 w-full resize-none border-0 bg-transparent focus:ring-0 focus-visible:ring-0 dark:bg-transparent outline-none'
           />
           <button
