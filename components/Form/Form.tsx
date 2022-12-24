@@ -1,3 +1,4 @@
+'use client';
 import { useRef, useState } from 'react';
 import axios from 'axios';
 
@@ -34,6 +35,7 @@ const Form = () => {
     const { data } = await axios.post('/api/response', { prompt: message });
     const totalResponse: String[] = [...response, message, data.bot];
     setResponse(totalResponse);
+    localStorage.setItem('response', JSON.stringify(totalResponse));
     setIsLoading(false);
     messageInput.current!.value = '';
   };
