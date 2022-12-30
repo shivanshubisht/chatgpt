@@ -1,5 +1,5 @@
 {
-  "name": "chatgpt",
+  "name": "shivanshu.in",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,20 +10,22 @@
   },
   "dependencies": {
     "@next/font": "13.1.1",
+    "@prisma/client": "^4.8.0",
     "@types/node": "18.11.17",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.10",
+    "axios": "^1.2.1",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
     "next": "13.1.1",
-    "openai": "^3.1.0",
+    "prisma": "^4.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.4"
+    "three": "^0.148.0",
+    "typescript": "4.9.4",
+    "vanta": "^0.5.24"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.20",
-    "tailwindcss": "^3.2.4"
+    "@types/three": "^0.146.0"
   }
 }

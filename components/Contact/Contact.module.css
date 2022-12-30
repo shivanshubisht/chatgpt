@@ -1,0 +1,228 @@
+/* contact section */
+#contact {
+  height: 100vh;
+  /* background: #1d1d1d; */
+  background-color: #0b2535;
+}
+
+.container_contact {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 2.5rem;
+  display: flex;
+  flex-direction: row;
+}
+
+@media screen and (max-width: 768px) {
+  .container_contact {
+    flex-wrap: wrap;
+  }
+}
+
+/* contact-box */
+#contact {
+  display: flex;
+  justify-content: center;
+}
+
+.contact_box {
+  width: clamp(100px, 90%, 1000px);
+  margin: 80px 50px;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  background: radial-gradient(
+      circle at 55% 92%,
+      #252729 0 12%,
+      transparent 12.2%
+    ),
+    radial-gradient(circle at 94% 72%, #292728 0 10%, transparent 10.2%),
+    radial-gradient(
+      circle at 20% max(78%, 350px),
+      #292829 0 7%,
+      transparent 7.2%
+    ),
+    radial-gradient(circle at 0% 0%, #2d2c2c 0 30%, transparent 30.2%),
+    radial-gradient(circle at 60% 38%, #2d292c 0 20%, transparent 20.2%),
+    #1d1d1d;
+}
+
+.contact_links,
+.contact_form_wrapper {
+  width: 50%;
+  padding: 8% 5% 10% 5%;
+}
+
+.contact_links {
+  /* background:
+        radial-gradient(circle at 55% 92%, #252729 0 12%, transparent 12.2%),
+        radial-gradient(circle at 94% 72%, #292728 0 10%, transparent 10.2%),
+        radial-gradient(circle at 20% max(78%, 350px), #292829 0 7%, transparent 7.2%),
+        radial-gradient(circle at 0% 0%, #2d2c2c 0 40%, transparent 40.2%),
+        #1d1d1d; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media only screen and (max-width: 800px) {
+  .contact_links,
+  .contact_form_wrapper {
+    width: 100%;
+  }
+  .contact_box {
+    border-radius: 10px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .contact_box {
+    width: 95%;
+    margin: 8% 5%;
+  }
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.link {
+  margin: 10px;
+  cursor: pointer;
+}
+
+.contact_box img {
+  width: 45px;
+  height: 45px;
+  transition: 0.2s;
+  user-select: none;
+}
+
+.contact_box img:hover {
+  transform: scale(1.1, 1.1);
+}
+
+.contact_box img:active {
+  transform: scale(1.1, 1.1);
+  filter: drop-shadow(2px 4px 4px #222) invert(0.25);
+}
+
+.form_item {
+  position: relative;
+}
+
+.contact_form_wrapper label {
+  position: absolute;
+  top: 10px;
+  left: 2%;
+  color: #999;
+  font-size: clamp(14px, 1.5vw, 18px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.contact_form_wrapper input,
+.contact_form_wrapper textarea {
+  color: white;
+  background: transparent;
+  width: 100%;
+  outline: 0;
+  border: 0px;
+  border-bottom: 1px solid #1de4e7;
+  margin-bottom: 20px;
+  padding: 12px;
+  font-size: clamp(15px, 1.5vw, 18px);
+  resize: none;
+}
+
+.contact_form_wrapper input:focus + label,
+.contact_form_wrapper input:valid + label,
+.contact_form_wrapper textarea:focus + label,
+.contact_form_wrapper textarea:valid + label {
+  font-size: clamp(13px, 1.3vw, 16px);
+  color: #1de4e7;
+  top: -20px;
+  transition: all 0.225s ease;
+}
+
+@media only screen and (max-width: 800px) {
+  .contact_box h2 {
+    font-size: clamp(40px, 10vw, 60px);
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .contact_box h2 {
+    font-size: clamp(30px, 12vw, 60px);
+  }
+
+  .links {
+    padding-top: 30px;
+  }
+
+  .contact_box img {
+    width: 38px;
+    height: 38px;
+  }
+}
+.contact_button {
+  text-decoration: none;
+  width: 100%;
+  max-width: 200px;
+  height: 40px;
+  display: block;
+  line-height: 40px;
+  letter-spacing: 3px;
+  position: relative;
+  text-align: center;
+  color: var(--clr-primary-contact);
+  margin-top: 50px;
+}
+
+.contact_button div {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.contact_button span.bg {
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  left: -5px;
+  top: 0;
+  transition: all 0.3s ease-in-out;
+  background-color: var(--clr-primary-contact);
+  transform: skewX(-19deg);
+}
+
+.contact_button:hover span.bg {
+  width: 110%;
+}
+
+.contact_button span.base {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  border: 1px solid var(--clr-primary-contact);
+  box-sizing: border-box;
+}
+
+.contact_button span.text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.contact_button:hover span.text {
+  color: #1d1d1d;
+}

@@ -1,0 +1,73 @@
+.logo {
+  width: 4.5rem;
+  padding: 0.7rem;
+}
+
+/* changed this from the tutorial video to
+   allow it to gain focus, making it tabbable */
+.nav_toggle {
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+.nav_toggle:focus ~ .nav_toggle_label {
+  outline: 3px solid rgba(#1de4e7, 0.75);
+}
+
+.nav_toggle_label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 1em;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 2rem;
+}
+
+.nav_toggle_label span,
+.nav_toggle_label span::before,
+.nav_toggle_label span::after {
+  display: block;
+  background: white;
+  height: 0.25rem;
+  width: 1.75em;
+  border-radius: 2px;
+  position: relative;
+}
+
+.nav_toggle_label span::before,
+.nav_toggle_label span::after {
+  content: '';
+  position: absolute;
+}
+
+.nav_toggle_label span::before {
+  bottom: 0.6rem;
+}
+
+.nav_toggle_label span::after {
+  top: 0.6rem;
+}
+
+.nav_toggle:checked ~ nav {
+  transform: scale(1, 1);
+}
+
+.nav_toggle:checked ~ nav a {
+  opacity: 1;
+  transition: opacity 250ms ease-in-out 250ms;
+}
+
+@media screen and (min-width: 800px) {
+  .nav_toggle_label {
+    display: none;
+  }
+
+  .logo {
+    grid-column: 2 / 3;
+  }
+}
