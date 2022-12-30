@@ -1,12 +1,9 @@
 export default function Head() {
   return (
     <>
-      <title>Shivanshu&apos;s Personal Website</title>
-      <meta content='width=device-width, initial-scale=1' name='viewport' />
-      <meta
-        name='description'
-        content="Shivanshu's Personal Website, Front End Developer in Next JS"
-      />
+      <title>ChatGPT</title>
+      <meta name='description' content='ChatGPT' />
+      <meta name='viewport' content='width=device-width, initial-scale=1' />
       <link rel='icon' href='/favicon.ico' />
     </>
   );
