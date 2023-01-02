@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import axios from 'axios';
+import useSWR from 'swr';
 
 const Form = () => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null);
@@ -49,20 +50,22 @@ const Form = () => {
     setResponse([]);
   };
 
-  useEffect(() => {
+  useSWR('fetchingResponse', async () => {
     const storedResponse = localStorage.getItem('response');
     if (storedResponse) {
       setResponse(JSON.parse(storedResponse));
     }
-  }, []);
+  });
 
-  const fetchModels = async () => {
-    const models = setModels((await (await fetch('/api/models')).json()).data);
+  const fetcher = async () => {
+    //   const models = setModels((await (await fetch('/api/models')).json()).data);
+    const models = await (await fetch('/api/models')).json();
+    setModels(models.data);
+    setCurrentModel(models.data[6].id);
+    return models;
   };
 
-  useEffect(() => {
-    fetchModels();
-  }, []);
+  useSWR('fetchingModels', fetcher);
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrentModel(e.target.value);
@@ -70,22 +73,17 @@ const Form = () => {
 
   return (
     <div className='flex justify-center'>
-      <div className='flex flex-col fixed left-5 top-5'>
-        <select
-          onChange={handleModelChange}
-          className='outline-none border-none p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900'
-        >
-          {models.map((model) => (
-            <option
-              key={model.id}
-              value={model.id}
-              defaultValue='text-davinci-003'
-            >
-              {model.id}
-            </option>
-          ))}
-        </select>
-      </div>
+      <select
+        value={currentModel}
+        onChange={handleModelChange}
+        className='w-72 fixed top-5 left-5 outline-none border-none p-4 rounded-md bg-white text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-900'
+      >
+        {models.map((model) => (
+          <option key={model.id} value={model.id}>
+            {model.id}
+          </option>
+        ))}
+      </select>
 
       <button
         onClick={handleReset}
@@ -116,7 +114,6 @@ const Form = () => {
                   className={`${
                     index % 2 === 0 ? 'bg-blue-500' : 'bg-gray-500'
                   } p-3 rounded-lg`}
-                  // style={{ textAlign: index % 2 === 0 ? 'left' : 'right' }}
                 >
                   <p>{item}</p>
                 </div>

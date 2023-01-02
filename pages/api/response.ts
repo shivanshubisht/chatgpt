@@ -13,7 +13,7 @@ export default async function handler (req: NextApiRequest, res: NextApiResponse
     const response = await openai.createCompletion({
       model: `${currentModel}`,
       prompt: `${message}`,
-      temperature: 0.7,
+      temperature: 0.2,
       max_tokens: 3000,
       top_p: 1,
       frequency_penalty: 0.5,
