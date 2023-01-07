@@ -3,6 +3,15 @@ import { useRef, useState } from 'react';
 import axios from 'axios';
 import useSWR from 'swr';
 
+interface ModelType {
+  object: 'engine';
+  id: string;
+  ready: boolean;
+  owner: string;
+  permissions: null;
+  created: string;
+}
+
 const Form = () => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null);
   const [response, setResponse] = useState<string[]>([]);
@@ -42,7 +51,6 @@ const Form = () => {
     setResponse(totalResponse);
     localStorage.setItem('response', JSON.stringify(totalResponse));
     setIsLoading(false);
-    messageInput.current!.value = '';
   };
 
   const handleReset = () => {
@@ -58,10 +66,14 @@ const Form = () => {
   });
 
   const fetcher = async () => {
-    //   const models = setModels((await (await fetch('/api/models')).json()).data);
+    // const models = setModels((await (await fetch('/api/models')).json()).data);
     const models = await (await fetch('/api/models')).json();
     setModels(models.data);
-    setCurrentModel(models.data[6].id);
+    // setCurrentModel(models.data[6].id);
+    const modelIndex = models.data.findIndex(
+      (model: ModelType) => model.id === 'text-davinci-003'
+    );
+    setCurrentModel(models.data[modelIndex].id);
     return models;
   };
 
