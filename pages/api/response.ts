@@ -1,5 +1,15 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { Configuration, OpenAIApi } from 'openai'
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Configuration, OpenAIApi } from 'openai';
+
+type RequestData = {
+  currentModel: string;
+  message: string;
+};
+
+type ResponseData = {
+  bot?: string | undefined;
+  message?: unknown | string;
+};
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -7,9 +17,12 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-export default async function handler (req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseData>
+) {
   try {
-    const {currentModel, message} = req.body;
+    const { currentModel, message } = req.body as RequestData;
     const response = await openai.createCompletion({
       model: `${currentModel}`,
       prompt: `${message}`,
@@ -21,11 +34,10 @@ export default async function handler (req: NextApiRequest, res: NextApiResponse
     });
 
     res.status(200).json({
-      bot: response.data.choices[0].text
+      bot: response.data.choices[0].text,
     });
-
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({ message: error || 'Something went wrong' });
   }
 }

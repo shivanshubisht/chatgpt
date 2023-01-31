@@ -1,8 +1,6 @@
 'use client';
 import { useRef, useState } from 'react';
-import axios from 'axios';
 import useSWR from 'swr';
-
 interface ModelType {
   object: 'engine';
   id: string;
@@ -43,11 +41,20 @@ const Form = () => {
       return;
     }
 
-    const { data } = await axios.post('/api/response', {
-      message,
-      currentModel,
-    });
-    const totalResponse: string[] = [...response, message, data.bot];
+    const { bot } = await (
+      await fetch('/api/response', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          currentModel,
+        }),
+      })
+    ).json();
+
+    const totalResponse: string[] = [...response, message, bot];
     setResponse(totalResponse);
     localStorage.setItem('response', JSON.stringify(totalResponse));
     setIsLoading(false);
