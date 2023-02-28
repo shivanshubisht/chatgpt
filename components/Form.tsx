@@ -1,6 +1,7 @@
 'use client';
 import { useRef, useState } from 'react';
 import useSWR from 'swr';
+
 interface ModelType {
   object: 'engine';
   id: string;
@@ -14,8 +15,8 @@ const Form = () => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null);
   const [response, setResponse] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [models, setModels] = useState<any[]>([]);
-  const [currentModel, setCurrentModel] = useState('text-davinci-003');
+  const [models, setModels] = useState<ModelType[]>([]);
+  const [currentModel, setCurrentModel] = useState<string>('text-davinci-003');
 
   const handleEnter = (
     e: React.KeyboardEvent<HTMLTextAreaElement> &
@@ -32,8 +33,7 @@ const Form = () => {
     e.preventDefault();
     const message = messageInput.current?.value;
     if (message !== undefined) {
-      const initialResponse: string[] = [...response, message];
-      setResponse(initialResponse);
+      setResponse((prev) => [...prev, message]);
       messageInput.current!.value = '';
     }
 
@@ -41,22 +41,53 @@ const Form = () => {
       return;
     }
 
-    const { bot } = await (
-      await fetch('/api/response', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          currentModel,
-        }),
-      })
-    ).json();
+    const response = await fetch('/api/response', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message,
+        currentModel,
+      }),
+    });
+    console.log('Edge function returned.');
 
-    const totalResponse: string[] = [...response, message, bot];
-    setResponse(totalResponse);
-    localStorage.setItem('response', JSON.stringify(totalResponse));
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const data = response.body;
+    if (!data) {
+      return;
+    }
+
+    const reader = data.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    // let responseChunks: string[] = [];
+    // while (!done) {
+    //   const { value, done: doneReading } = await reader.read();
+    //   done = doneReading;
+    //   const chunkValue = decoder.decode(value);
+    //   responseChunks.push(chunkValue);
+    // }
+
+    // setResponse((prev) => [...prev, responseChunks.join('')]);
+
+    setResponse((prev) => [...prev, message]);
+
+    let currentResponse: string[] = [];
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+      // currentResponse = [...currentResponse, message, chunkValue];
+      currentResponse = [...currentResponse, chunkValue];
+      setResponse((prev) => [...prev.slice(0, -1), currentResponse.join('')]);
+    }
+
     setIsLoading(false);
   };
 
@@ -73,10 +104,8 @@ const Form = () => {
   });
 
   const fetcher = async () => {
-    // const models = setModels((await (await fetch('/api/models')).json()).data);
     const models = await (await fetch('/api/models')).json();
     setModels(models.data);
-    // setCurrentModel(models.data[6].id);
     const modelIndex = models.data.findIndex(
       (model: ModelType) => model.id === 'text-davinci-003'
     );

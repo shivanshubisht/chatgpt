@@ -1,43 +1,42 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Configuration, OpenAIApi } from 'openai';
+import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream';
 
 type RequestData = {
   currentModel: string;
   message: string;
 };
 
-type ResponseData = {
-  bot?: string | undefined;
-  message?: unknown | string;
+export const config = {
+  runtime: 'edge',
 };
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
-) {
+const handler = async (req: Request): Promise<Response> => {
   try {
-    const { currentModel, message } = req.body as RequestData;
-    const response = await openai.createCompletion({
+    const { currentModel, message } = (await req.json()) as RequestData;
+    const response: OpenAIStreamPayload = {
       model: `${currentModel}`,
       prompt: `${message}`,
-      temperature: 0.2,
-      max_tokens: 3000,
+      temperature: 0.7,
+      max_tokens: 300,
       top_p: 1,
-      frequency_penalty: 0.5,
+      frequency_penalty: 0,
       presence_penalty: 0,
-    });
+      stream: true,
+      n: 1,
+    };
 
-    res.status(200).json({
-      bot: response.data.choices[0].text,
-    });
+    const stream = await OpenAIStream(response);
+    return new Response(stream);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error || 'Something went wrong' });
+    return new Response(
+      JSON.stringify({ message: error || 'Something went wrong' }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   }
-}
+};
+
+export default handler;
