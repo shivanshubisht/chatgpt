@@ -66,16 +66,6 @@ const Form = () => {
     const decoder = new TextDecoder();
     let done = false;
 
-    // let responseChunks: string[] = [];
-    // while (!done) {
-    //   const { value, done: doneReading } = await reader.read();
-    //   done = doneReading;
-    //   const chunkValue = decoder.decode(value);
-    //   responseChunks.push(chunkValue);
-    // }
-
-    // setResponse((prev) => [...prev, responseChunks.join('')]);
-
     setResponse((prev) => [...prev, message]);
 
     let currentResponse: string[] = [];
