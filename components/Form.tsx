@@ -77,7 +77,8 @@ const Form = () => {
       currentResponse = [...currentResponse, chunkValue];
       setResponse((prev) => [...prev.slice(0, -1), currentResponse.join('')]);
     }
-
+    // breaks text indent on refresh due to streaming
+    // localStorage.setItem('response', JSON.stringify(currentResponse));
     setIsLoading(false);
   };
 
