@@ -5,38 +5,36 @@ type RequestData = {
   message: string;
 };
 
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error('Missing env var from OpenAI');
+}
+
 export const config = {
   runtime: 'edge',
 };
 
 const handler = async (req: Request): Promise<Response> => {
-  try {
-    const { currentModel, message } = (await req.json()) as RequestData;
-    const response: OpenAIStreamPayload = {
-      model: `${currentModel}`,
-      prompt: `${message}`,
-      temperature: 0.7,
-      max_tokens: 300,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-      stream: true,
-      n: 1,
-    };
+  const { currentModel, message } = (await req.json()) as RequestData;
 
-    const stream = await OpenAIStream(response);
-    return new Response(stream);
-  } catch (error) {
-    console.error(error);
-    return new Response(
-      JSON.stringify({ message: error || 'Something went wrong' }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+  if (!message) {
+    return new Response('No message in the request', { status: 400 });
   }
+
+  const payload: OpenAIStreamPayload = {
+    model: 'gpt-3.5-turbo',
+    // model: `${currentModel}`,
+    messages: [{ role: 'user', content: message }],
+    temperature: 0.7,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+    max_tokens: 200,
+    stream: true,
+    n: 1,
+  };
+
+  const stream = await OpenAIStream(payload);
+  return new Response(stream);
 };
 
 export default handler;
