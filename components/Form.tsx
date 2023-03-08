@@ -1,44 +1,44 @@
-'use client';
-import { useRef, useState } from 'react';
-import useSWR from 'swr';
+'use client'
+import { useRef, useState } from 'react'
+import useSWR from 'swr'
 
 interface ModelType {
-  object: 'engine';
-  id: string;
-  ready: boolean;
-  owner: string;
-  permissions: null;
-  created: string;
+  object: 'engine'
+  id: string
+  ready: boolean
+  owner: string
+  permissions: null
+  created: string
 }
 
 const Form = () => {
-  const messageInput = useRef<HTMLTextAreaElement | null>(null);
-  const [response, setResponse] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [models, setModels] = useState<ModelType[]>([]);
-  const [currentModel, setCurrentModel] = useState<string>('gpt-3.5-turbo');
+  const messageInput = useRef<HTMLTextAreaElement | null>(null)
+  const [response, setResponse] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [models, setModels] = useState<ModelType[]>([])
+  const [currentModel, setCurrentModel] = useState<string>('gpt-3.5-turbo')
 
   const handleEnter = (
     e: React.KeyboardEvent<HTMLTextAreaElement> &
       React.FormEvent<HTMLFormElement>
   ) => {
     if (e.key === 'Enter' && isLoading === false) {
-      e.preventDefault();
-      setIsLoading(true);
-      handleSubmit(e);
+      e.preventDefault()
+      setIsLoading(true)
+      handleSubmit(e)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const message = messageInput.current?.value;
+    e.preventDefault()
+    const message = messageInput.current?.value
     if (message !== undefined) {
-      setResponse((prev) => [...prev, message]);
-      messageInput.current!.value = '';
+      setResponse((prev) => [...prev, message])
+      messageInput.current!.value = ''
     }
 
     if (!message) {
-      return;
+      return
     }
 
     const response = await fetch('/api/response', {
@@ -50,65 +50,67 @@ const Form = () => {
         message,
         currentModel,
       }),
-    });
-    console.log('Edge function returned.');
+    })
+    console.log('Edge function returned.')
 
     if (!response.ok) {
-      throw new Error(response.statusText);
+      throw new Error(response.statusText)
     }
 
-    const data = response.body;
+    console.log(response)
+
+    const data = response.body
     if (!data) {
-      return;
+      return
     }
 
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
+    const reader = data.getReader()
+    const decoder = new TextDecoder()
+    let done = false
 
-    setResponse((prev) => [...prev, message]);
+    setResponse((prev) => [...prev, message])
 
-    let currentResponse: string[] = [];
+    let currentResponse: string[] = []
     while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
+      const { value, done: doneReading } = await reader.read()
+      done = doneReading
+      const chunkValue = decoder.decode(value)
       // currentResponse = [...currentResponse, message, chunkValue];
-      currentResponse = [...currentResponse, chunkValue];
-      setResponse((prev) => [...prev.slice(0, -1), currentResponse.join('')]);
+      currentResponse = [...currentResponse, chunkValue]
+      setResponse((prev) => [...prev.slice(0, -1), currentResponse.join('')])
     }
     // breaks text indent on refresh due to streaming
     // localStorage.setItem('response', JSON.stringify(currentResponse));
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   const handleReset = () => {
-    localStorage.removeItem('response');
-    setResponse([]);
-  };
+    localStorage.removeItem('response')
+    setResponse([])
+  }
 
   useSWR('fetchingResponse', async () => {
-    const storedResponse = localStorage.getItem('response');
+    const storedResponse = localStorage.getItem('response')
     if (storedResponse) {
-      setResponse(JSON.parse(storedResponse));
+      setResponse(JSON.parse(storedResponse))
     }
-  });
+  })
 
   const fetcher = async () => {
-    const models = await (await fetch('/api/models')).json();
-    setModels(models.data);
+    const models = await (await fetch('/api/models')).json()
+    setModels(models.data)
     const modelIndex = models.data.findIndex(
       (model: ModelType) => model.id === 'gpt-3.5-turbo'
-    );
-    setCurrentModel(models.data[modelIndex].id);
-    return models;
-  };
+    )
+    setCurrentModel(models.data[modelIndex].id)
+    return models
+  }
 
-  useSWR('fetchingModels', fetcher);
+  useSWR('fetchingModels', fetcher)
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCurrentModel(e.target.value);
-  };
+    setCurrentModel(e.target.value)
+  }
 
   return (
     <div className='flex justify-center'>
@@ -143,7 +145,7 @@ const Form = () => {
                 >
                   <p>{item}</p>
                 </div>
-              );
+              )
             })
           : response
           ? response.map((item: string, index: number) => {
@@ -156,7 +158,7 @@ const Form = () => {
                 >
                   <p>{item}</p>
                 </div>
-              );
+              )
             })
           : null}
       </div>
@@ -191,7 +193,7 @@ const Form = () => {
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Form;
+export default Form
