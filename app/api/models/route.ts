@@ -1,12 +1,10 @@
-import { Configuration, OpenAIApi } from 'openai'
+import OpenAI from 'openai'
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
-const openai = new OpenAIApi(configuration)
+const openai = new OpenAI()
 
 export async function GET(request: Request) {
-  const response = await openai.listModels()
-  return new Response(JSON.stringify(response.data))
+  const response = await openai.models.list()
+  response.data.sort((a, b) => a.id.localeCompare(b.id))
+
+  return new Response(JSON.stringify(response))
 }

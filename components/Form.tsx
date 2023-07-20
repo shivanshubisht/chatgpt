@@ -16,7 +16,7 @@ const Form = () => {
   const [response, setResponse] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [models, setModels] = useState<ModelType[]>([])
-  const [currentModel, setCurrentModel] = useState<string>('gpt-3.5-turbo')
+  const [currentModel, setCurrentModel] = useState<string>('gpt-4')
 
   const handleEnter = (
     e: React.KeyboardEvent<HTMLTextAreaElement> &
@@ -100,7 +100,7 @@ const Form = () => {
     const models = await (await fetch('/api/models')).json()
     setModels(models.data)
     const modelIndex = models.data.findIndex(
-      (model: ModelType) => model.id === 'gpt-3.5-turbo'
+      (model: ModelType) => model.id === 'gpt-4'
     )
     setCurrentModel(models.data[modelIndex].id)
     return models

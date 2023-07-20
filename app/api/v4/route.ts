@@ -14,7 +14,7 @@ type RequestData = {
 
 export const runtime = 'edge'
 
-export default async function handler(request: Request) {
+export async function POST(request: Request) {
   const { message } = (await request.json()) as RequestData
 
   if (!message) {
@@ -35,5 +35,5 @@ export default async function handler(request: Request) {
   // Construct a response object with the completions
   const responseBody = completionResult.join('')
   console.log(responseBody)
-  return new Response(responseBody, { status: 200 })
+  return new NextResponse(responseBody, { status: 200 })
 }
