@@ -1,11 +1,6 @@
-import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
-// const openai = new OpenAI()
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // defaults to process.env["OPENAI_API_KEY"]
-})
+const openai = new OpenAI()
 
 type RequestData = {
   currentModel: string
@@ -27,13 +22,18 @@ export default async function handler(request: Request) {
     stream: true,
   })
 
-  const completionResult = []
-  for await (const part of completion) {
-    completionResult.push(part.choices[0]?.delta.content || '')
-  }
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder()
 
-  // Construct a response object with the completions
-  const responseBody = completionResult.join('')
-  console.log(responseBody)
-  return new Response(responseBody, { status: 200 })
+      for await (const part of completion) {
+        const text = part.choices[0]?.delta.content || ''
+        const chunk = encoder.encode(text)
+        controller.enqueue(chunk)
+      }
+      controller.close()
+    },
+  })
+
+  return new Response(stream)
 }

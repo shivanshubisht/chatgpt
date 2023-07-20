@@ -16,7 +16,7 @@
     "eslint-config-next": "13.3.0",
     "eventsource-parser": "^1.0.0",
     "next": "13.3.0",
-    "openai": "4.0.0-beta.5",
+    "openai": "4.0.0-beta.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "swr": "^2.1.2",
