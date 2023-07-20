@@ -9,8 +9,10 @@ type RequestData = {
 
 export const runtime = 'edge'
 
-export default async function handler(request: Request) {
+export async function POST(request: Request) {
   const { message } = (await request.json()) as RequestData
+
+  console.log(message)
 
   if (!message) {
     return new Response('No message in the request', { status: 400 })
