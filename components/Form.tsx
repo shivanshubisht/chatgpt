@@ -1,21 +1,14 @@
 'use client'
+import type OpenAI from 'openai'
 import { useRef, useState } from 'react'
 import useSWR from 'swr'
 
-interface ModelType {
-  object: 'engine'
-  id: string
-  ready: boolean
-  owner: string
-  permissions: null
-  created: string
-}
-
-const Form = () => {
+const Form = ({ modelsList }: { modelsList: OpenAI.ModelsPage }) => {
   const messageInput = useRef<HTMLTextAreaElement | null>(null)
   const [response, setResponse] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [models, setModels] = useState<ModelType[]>([])
+  // const [models, setModels] = useState<ModelType[]>([])
+  const [models, setModels] = useState(modelsList.data)
   const [currentModel, setCurrentModel] = useState<string>('gpt-4')
 
   const handleEnter = (
@@ -100,9 +93,13 @@ const Form = () => {
     const models = await (await fetch('/api/models')).json()
     setModels(models.data)
     const modelIndex = models.data.findIndex(
-      (model: ModelType) => model.id === 'gpt-4'
+      (model: any) => model.id === 'gpt-4'
     )
-    setCurrentModel(models.data[modelIndex].id)
+    setCurrentModel(
+      (models as OpenAI.ModelsPage).data[
+        models.data.findIndex((model: any) => model.id === 'gpt-4')
+      ].id
+    )
     return models
   }
 

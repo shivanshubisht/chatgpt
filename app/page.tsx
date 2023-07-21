@@ -1,12 +1,17 @@
-import { Inter } from 'next/font/google';
-import Form from '@/components/Form';
+import { Inter } from 'next/font/google'
+import Form from '@/components/Form'
+import type OpenAI from 'openai'
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default async function Home() {
+  const modelsList = (await (
+    await fetch('http://localhost:3000/api/models')
+  ).json()) as OpenAI.ModelsPage
+  console.log(modelsList)
   return (
     <main className={inter.className}>
-      <Form />
+      <Form modelsList={modelsList} />
     </main>
-  );
+  )
 }
