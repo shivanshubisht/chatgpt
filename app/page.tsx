@@ -8,7 +8,7 @@ export default async function Home() {
   const modelsList = (await (
     await fetch('http://localhost:3000/api/models')
   ).json()) as OpenAI.ModelsPage
-  console.log(modelsList)
+  // console.log(modelsList)
   return (
     <main className={inter.className}>
       <Form modelsList={modelsList} />
