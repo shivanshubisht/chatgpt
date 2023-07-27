@@ -2,7 +2,7 @@ import './globals.css'
 
 export const metadata = {
   title: 'ChatGPT',
-  description: 'A chatbot powered by GPT-3',
+  description: 'A chatbot powered by GPT',
 }
 
 export default function RootLayout({
