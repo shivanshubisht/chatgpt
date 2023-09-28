@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       const encoder = new TextEncoder()
 
       for await (const part of completion) {
-        const text = part.choices[0]?.delta.content || ''
+        const text = part.choices[0]?.delta.content ?? ''
         const chunk = encoder.encode(text)
         controller.enqueue(chunk)
       }
